@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 
 // Load env vars
@@ -11,10 +12,21 @@ dotenv.config({
 // Connect to DB
 connectDB();
 
+// Route files
+const todos = require('./routes/v1/todos');
+
 const app = express();
 
 // Use body-parser
 app.use(express.json());
+
+// Enable cors
+app.use(cors());
+
+// Mount routers
+app.use('/api/v1/todos', todos);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
